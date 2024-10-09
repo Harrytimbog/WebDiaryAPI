@@ -59,6 +59,47 @@ namespace WebDiaryAPI.Controllers
             return Created(resourceUrl, diaryEntry);
 
         }
-            
+
+        // Edit / Update
+
+        // This actions handles HTTP PUT requests at the URL pattern "api/DiaryEntries/{id}"
+        // PUT: api/DiaryEntries/5
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> EditDiaryEntry(int id, [FromBody] DiaryEntry diaryEntry)
+        {
+            if(id != diaryEntry.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(diaryEntry).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            } 
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DiaryEntryExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
+            return NoContent();
+        }
+
+        //Helper method to check if DiaryEntry exists
+        private bool DiaryEntryExists(int id)
+        {
+            return _context.DiaryEntries.Any(e => e.Id == id);
+        }
+
     }
 }
