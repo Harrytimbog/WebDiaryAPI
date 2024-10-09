@@ -40,5 +40,25 @@ namespace WebDiaryAPI.Controllers
 
             return diaryEntry;
         }
+
+        // Create
+
+        [HttpPost]
+
+        public async Task<ActionResult<DiaryEntry>> CreateDiaryEntry(DiaryEntry diaryEntry)
+        {
+            diaryEntry.Id = 0; // this is set to 0 to avoid errors with setting id manually 
+            // Add DataEntry obj to database
+            await _context.DiaryEntries.AddAsync(diaryEntry);
+
+            // Save changes to database
+            await _context.SaveChangesAsync();
+
+            var resourceUrl = Url.Action(nameof(GetDiaryEntry), new { id = diaryEntry.Id });
+
+            return Created(resourceUrl, diaryEntry);
+
+        }
+            
     }
 }
