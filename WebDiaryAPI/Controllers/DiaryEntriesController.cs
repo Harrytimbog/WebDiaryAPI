@@ -17,11 +17,28 @@ namespace WebDiaryAPI.Controllers
             _context = context;
         }
 
+        // Index
+
         [HttpGet]
 
         public async Task<ActionResult<IEnumerable<DiaryEntry>>> GetDiaryEntries()
         {
             return await _context.DiaryEntries.ToListAsync();
+        }
+
+        // Show
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DiaryEntry>> GetDiaryEntry(int id)
+        {
+            var diaryEntry = await _context.DiaryEntries.FindAsync(id);
+
+            if (diaryEntry == null)
+            {
+                return NotFound();
+            }
+
+            return diaryEntry;
         }
     }
 }
